@@ -1,0 +1,33 @@
+%__author__ = "Sneha Sudhakaran"
+%__copyright__ = "Copyright"
+%__license__ = "N/A Not licensable"
+%__status__ = "Production"
+
+function points = equidistantPointsOnCircle(x0, y0, r, numPoints)
+    % x0, y0   : Center of the circle
+    % r        : Radius of the circle
+    % numPoints: Number of points to calculate (6 in this case)
+
+    theta = linspace(0, 2 * pi, numPoints + 1); % Angle for each point, last angle repeats the first
+    theta = theta(1:end-1); % Remove the last angle to avoid overlap
+    
+    % Calculate x and y coordinates for each point
+    x = x0 + r * cos(theta);
+    y = y0 + r * sin(theta);
+
+    % Store points in a matrix
+    points = [x', y'];
+    
+    % Plot the circle and points for visualization
+    figure;
+    hold on;
+    plot(x0, y0, 'ro', 'MarkerFaceColor', 'r'); % Center of the circle
+    plot(x, y, 'bo', 'MarkerFaceColor', 'b');   % Equidistant points on the circle
+    viscircles([x0, y0], r, 'LineStyle', '--'); % Plot the circle outline
+    axis equal;
+    title('Equidistant Points on a Circle');
+    xlabel('X-axis');
+    ylabel('Y-axis');
+    grid on;
+    hold off;
+end
