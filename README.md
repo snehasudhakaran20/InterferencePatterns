@@ -1,2 +1,4 @@
 # InterferencePatterns
-Photons and interactions
+Photons and interactions in Matlab
+
+just for fun 
