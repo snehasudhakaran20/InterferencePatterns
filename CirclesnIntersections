@@ -1,0 +1,94 @@
+%__author__ = "Sneha Sudhakaran"
+%__copyright__ = "Copyright"
+%__license__ = "N/A Not licensable"
+%__status__ = "Production"
+% Matlab code
+
+
+
+function concentricCirclesWithRange(xCenters, yCenters, maxRadius, lineWidth, color, iRange, radiusFunc, titleString)
+    % Parameters:
+    % xCenters, yCenters - Arrays of circle centers (for multiple sets of circles)
+    % maxRadius          - Maximum radius beyond which circles are not drawn
+    % radiusFunc         - Function handle to calculate the radius of each circle
+    % lineWidth          - Width of the circle lines
+    % color              - Color of the circle lines
+    % iRange             - Array of values for i (e.g., 1:5)
+
+    theta = linspace(0, 2*pi, 100); % Angle for circle points
+    hold on;
+    axis equal;
+
+    % Store all circle data for intersection checking
+    circles = [];
+    
+    % Plot each set of concentric circles with custom radius function and limit on radius
+    for j = 1:length(xCenters)
+        x = xCenters(j);
+        y = yCenters(j);
+
+        for i = iRange
+            % Calculate the radius for the current circle using radiusFunc
+            radius = radiusFunc(i);
+            
+            % Break the loop if the radius exceeds maxRadius
+            if radius > maxRadius
+                break;
+            end
+            
+            % Calculate and plot the circle
+            xCircle = x + radius * cos(theta);
+            yCircle = y + radius * sin(theta);
+            plot(xCircle, yCircle, 'Color', color(j), 'LineWidth', lineWidth);
+            
+            % Save the circle data for intersection checking
+            circles = [circles; struct('x', x, 'y', y, 'r', radius)];
+        end
+    end
+
+    % Find and plot intersection points between all pairs of circles
+    for i = 1:length(circles)
+        for j = i+1:length(circles)
+            [xInter, yInter] = findCircleIntersections(circles(i), circles(j));
+            if ~isempty(xInter)
+                plot(xInter, yInter, 'ko', 'MarkerFaceColor', 'k'); % Plot intersection points
+                % Draw lines connecting intersection points
+                if length(xInter) == 2
+                    plot([xInter(1) xInter(2)], [yInter(1) yInter(2)], 'k--');
+                end
+            end
+        end
+    end
+
+    xlabel('X-axis');
+    ylabel('Y-axis');
+    title(titleString);%'Concentric Circles with Radius Limit and Intersection Lines');
+    grid on;
+    hold off;
+end
+
+function [xIntersect, yIntersect] = findCircleIntersections(circle1, circle2)
+    % Calculate intersections between two circles
+    % circle1 and circle2 should have fields: x, y, r (center and radius)
+    
+    x1 = circle1.x; y1 = circle1.y; r1 = circle1.r;
+    x2 = circle2.x; y2 = circle2.y; r2 = circle2.r;
+    
+    % Distance between circle centers
+    d = sqrt((x2 - x1)^2 + (y2 - y1)^2);
+
+    % Check if circles intersect
+    if d > r1 + r2 || d < abs(r1 - r2) || d == 0
+        xIntersect = [];
+        yIntersect = [];
+        return;
+    end
+
+    % Calculate intersection points
+    a = (r1^2 - r2^2 + d^2) / (2 * d);
+    h = sqrt(r1^2 - a^2);
+    x0 = x1 + a * (x2 - x1) / d;
+    y0 = y1 + a * (y2 - y1) / d;
+    xIntersect = [x0 + h * (y2 - y1) / d, x0 - h * (y2 - y1) / d];
+    yIntersect = [y0 - h * (x2 - x1) / d, y0 + h * (x2 - x1) / d];
+end
