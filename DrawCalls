@@ -1,0 +1,26 @@
+%__author__ = "Sneha Sudhakaran"
+%__copyright__ = "Copyright"
+%__license__ = "N/A Not licensable"
+%__status__ = "Production"
+
+
+% Define the x and y coordinates for the centers
+xCenters1 = [-5,5];
+yCenters1 = [5,-5];
+
+% Define the x and y coordinates for the centers
+xCenters = [5.0000, 2.5000, -2.5000, -5.0000, -2.5000, 2.5000];
+yCenters = [0, 4.3301, 4.3301, 0.0000, -4.3301, -4.3301];
+colour = ['b','r','g','r','b','g'];
+
+maxRadius = 1000; %00000000000; % Set the maximum radius for circles
+iRange = 1:10;  % Define a range for i
+
+% Define a custom growth function for radius
+radiusFunc1 = @(i) 1 + 1 * i;
+
+figure;
+
+% Call the function with the custom radius limit and specified range for i
+concentricCirclesCustomfunction(xCenters, yCenters, maxRadius,1, colour, iRange,radiusFunc1,'i+10');
+
